@@ -3,7 +3,6 @@ package com.github.ashaurin.diplom.util.validation;
 import lombok.experimental.UtilityClass;
 import com.github.ashaurin.diplom.HasId;
 import com.github.ashaurin.diplom.error.IllegalRequestDataException;
-import com.github.ashaurin.diplom.error.OutOfTimeException;
 
 import java.time.LocalDateTime;
 
@@ -30,7 +29,7 @@ public class ValidationUtil {
     public static void checkTime() {
         LocalDateTime now = LocalDateTime.now();
         if (now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11, 0)) ) {
-            throw new OutOfTimeException(" It is too late, vote can't be changed");
+            throw new IllegalArgumentException("It is too late, vote can't be changed");
         }
     }
 }

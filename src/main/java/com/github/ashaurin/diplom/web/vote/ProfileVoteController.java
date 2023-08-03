@@ -15,6 +15,7 @@ import com.github.ashaurin.diplom.service.VoteService;
 import com.github.ashaurin.diplom.web.AuthUser;
 
 import java.net.URI;
+import java.time.LocalDate;
 
 import static com.github.ashaurin.diplom.util.validation.ValidationUtil.*;
 
@@ -25,7 +26,7 @@ import static com.github.ashaurin.diplom.util.validation.ValidationUtil.*;
 @AllArgsConstructor
 public class ProfileVoteController {
 
-    static final String REST_URL = "/api/profile/votes";
+    static final String REST_URL = "/api/profile/vote";
 
     private final VoteRepository repository;
     private final VoteService service;
@@ -51,6 +52,7 @@ public class ProfileVoteController {
         checkTime();
         int userId = authUser.id();
         log.info("update vote for user {}", userId);
+        vote.setDate(LocalDate.now());
         Vote currentVote = repository.getExisted(userId);
         assureIdConsistent(vote, currentVote.id());
         service.save(userId, vote);
@@ -58,9 +60,11 @@ public class ProfileVoteController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Vote vote) {
+        checkTime();
         int userId = authUser.id();
         log.info("create vote for user {}", userId);
         checkNew(vote);
+        vote.setDate(LocalDate.now());
         Vote created = service.save(userId, vote);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{userId}")

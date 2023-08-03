@@ -1,6 +1,7 @@
 package com.github.ashaurin.diplom.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
@@ -18,7 +19,7 @@ import java.time.LocalDate;
 public class Vote extends BaseEntity {
 
     @Column(name = "date", nullable = false)
-    @NotNull
+    @Schema(hidden = true)
     private LocalDate date;
 
     @Column(name = "restaurant_id", nullable = false)
