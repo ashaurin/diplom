@@ -23,22 +23,4 @@ public interface VoteRepository extends BaseRepository<Vote>{
     @Query("SELECT v FROM Vote v WHERE v.user.id = :userId AND v.date = current_date")
     Optional<Vote> get(int userId);
 
-
-    default void deleteExisted(int userId) {
-        if (delete(userId) == 0) {
-            throw new NotFoundException("Entity for userId=" + userId + " not found");
-        }
-    }
-
-    default Vote getExisted(int userId) {
-        return get(userId).
-                orElseThrow(() -> new NotFoundException("Entity for userId=" + userId + " not found"));
-    }
-
-    default void checkExisted(int userId) {
-        if(get(userId).isEmpty()){
-            throw new NotFoundException("Entity for userId=" + userId + " not found");
-        }
-    }
-
 }

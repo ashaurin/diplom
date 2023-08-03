@@ -57,7 +57,7 @@ public class AdminDishController {
     public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Dish dish, @PathVariable int id) {
         log.info("update {} for user {}", id, authUser.id());
         assureIdConsistent(dish, id);
-        repository.getExistedOrBelonged(id);
+        repository.getExisted(id);
         service.save(dish);
     }
 

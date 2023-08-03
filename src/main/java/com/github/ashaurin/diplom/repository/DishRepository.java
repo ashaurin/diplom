@@ -17,8 +17,4 @@ public interface DishRepository extends BaseRepository<Dish>{
     @Query("SELECT d FROM Dish d WHERE d.id = :id AND d.date = current_date")
     Optional<Dish> get(int id);
 
-    default Dish getExistedOrBelonged(int id) {
-        return get(id).orElseThrow(
-                () -> new DataConflictException("Dish id=" + id + " is not exist"));
-    }
 }

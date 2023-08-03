@@ -56,7 +56,7 @@ public class AdminRestaurantController {
     public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} for user {}", id, authUser.id());
         assureIdConsistent(restaurant, id);
-        repository.getExistedOrBelonged(id);
+        repository.getExisted(id);
         service.save(restaurant);
     }
 
