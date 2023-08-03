@@ -8,11 +8,16 @@ import com.github.ashaurin.diplom.repository.UserRepository;
 import com.github.ashaurin.diplom.repository.VoteRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static java.time.LocalDateTime.of;
 
 @Service
 @AllArgsConstructor
 public class VoteService {
+
+    private static final int checkHour = 11;
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
 
@@ -28,5 +33,12 @@ public class VoteService {
     public void delete(int userId, LocalDate date) {
         Optional<Vote> vote = voteRepository.getByDate(userId, date);
         voteRepository.deleteExisted(vote.get().id());
+    }
+
+    public static void checkTime() {
+        LocalDateTime now = LocalDateTime.now();
+        if (now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), checkHour, 0)) ) {
+            throw new IllegalArgumentException("It is too late, vote can't be changed");
+        }
     }
 }

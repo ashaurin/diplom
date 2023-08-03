@@ -4,10 +4,6 @@ import lombok.experimental.UtilityClass;
 import com.github.ashaurin.diplom.HasId;
 import com.github.ashaurin.diplom.error.IllegalRequestDataException;
 
-import java.time.LocalDateTime;
-
-import static java.time.LocalDateTime.of;
-
 @UtilityClass
 public class ValidationUtil {
 
@@ -23,13 +19,6 @@ public class ValidationUtil {
             bean.setId(id);
         } else if (bean.id() != id) {
             throw new IllegalRequestDataException(bean.getClass().getSimpleName() + " must has id=" + id);
-        }
-    }
-
-    public static void checkTime() {
-        LocalDateTime now = LocalDateTime.now();
-        if (now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11, 0)) ) {
-            throw new IllegalArgumentException("It is too late, vote can't be changed");
         }
     }
 }

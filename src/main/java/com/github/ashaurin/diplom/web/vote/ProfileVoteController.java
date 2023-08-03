@@ -17,6 +17,7 @@ import com.github.ashaurin.diplom.web.AuthUser;
 import java.net.URI;
 import java.time.LocalDate;
 
+import static com.github.ashaurin.diplom.service.VoteService.checkTime;
 import static com.github.ashaurin.diplom.util.validation.ValidationUtil.*;
 
 
@@ -67,7 +68,7 @@ public class ProfileVoteController {
         vote.setDate(LocalDate.now());
         Vote created = service.save(userId, vote);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path(REST_URL + "/{userId}")
+                .path(REST_URL)
                 .buildAndExpand(created.getId()).toUri();
         return ResponseEntity.created(uriOfNewResource).body(created);
     }

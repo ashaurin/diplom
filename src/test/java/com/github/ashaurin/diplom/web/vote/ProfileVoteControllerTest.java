@@ -27,6 +27,8 @@ import static com.github.ashaurin.diplom.web.vote.VoteTestData.*;
 
 public class ProfileVoteControllerTest extends AbstractControllerTest {
 
+    private static final int checkHour = 11;
+
     @Autowired
     private VoteRepository voteRepository;
 
@@ -66,7 +68,7 @@ public class ProfileVoteControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void update() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        Assumptions.assumeFalse(now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11, 0)));
+        Assumptions.assumeFalse(now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), checkHour, 0)));
 
         Vote updated = VoteTestData.getUpdated();
         perform(MockMvcRequestBuilders.put(ProfileVoteController.REST_URL)
@@ -82,7 +84,7 @@ public class ProfileVoteControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL2)
     void createWithLocation() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        Assumptions.assumeFalse(now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11, 0)));
+        Assumptions.assumeFalse(now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), checkHour, 0)));
 
         Vote newVote = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(ProfileVoteController.REST_URL)
