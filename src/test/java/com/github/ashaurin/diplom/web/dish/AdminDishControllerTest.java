@@ -11,6 +11,8 @@ import com.github.ashaurin.diplom.repository.DishRepository;
 import com.github.ashaurin.diplom.util.JsonUtil;
 import com.github.ashaurin.diplom.web.AbstractControllerTest;
 
+import java.time.LocalDate;
+
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -76,7 +78,7 @@ public class AdminDishControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL_SLASH + DISH1_ID))
                 .andExpect(status().isNoContent());
-        assertFalse(dishRepository.get(DISH1_ID).isPresent());
+        assertFalse(dishRepository.getByDate(DISH1_ID, LocalDate.now()).isPresent());
     }
 
 

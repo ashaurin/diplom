@@ -29,7 +29,7 @@ public class DishTestData {
     public static final Dish dish9 = new Dish(DISH1_ID + 8, RESTAURANT1_ID + 2, "Каппучино", LocalDate.now(), new BigDecimal(200));
 
 
-    public static final List<Dish> dishes = List.of(dish9, dish8, dish7, dish6, dish5, dish4, dish3, dish2, dish1);
+    public static final List<Dish> dishes = List.of(dish1, dish2, dish3, dish4, dish5, dish6, dish7, dish8, dish9);
 
     public static Dish getNew() {
         return new Dish(null, RESTAURANT1_ID,"Еда", LocalDate.now(),  new BigDecimal(800));

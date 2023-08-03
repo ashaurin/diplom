@@ -15,6 +15,7 @@ import com.github.ashaurin.diplom.web.AuthUser;
 
 import jakarta.validation.Valid;
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.github.ashaurin.diplom.util.validation.ValidationUtil.assureIdConsistent;
@@ -35,13 +36,13 @@ public class AdminDishController {
     @GetMapping
     public List<Dish> getAll(@AuthenticationPrincipal AuthUser authUser) {
         log.info("getAll for user {}", authUser.id());
-        return repository.getAll();
+        return repository.getAllByDate(LocalDate.now());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Dish> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         log.info("get dish {} for user {}", id, authUser.id());
-        return ResponseEntity.of(repository.get(id));
+        return ResponseEntity.of(repository.getByDate(id, LocalDate.now()));
     }
 
     @DeleteMapping("/{id}")

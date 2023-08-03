@@ -7,6 +7,9 @@ import com.github.ashaurin.diplom.model.Vote;
 import com.github.ashaurin.diplom.repository.UserRepository;
 import com.github.ashaurin.diplom.repository.VoteRepository;
 
+import java.time.LocalDate;
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor
 public class VoteService {
@@ -22,7 +25,8 @@ public class VoteService {
     }
 
     @Transactional
-    public void delete(int userId) {
-        voteRepository.deleteExisted(userId);
+    public void delete(int userId, LocalDate date) {
+        Optional<Vote> vote = voteRepository.getByDate(userId, date);
+        voteRepository.deleteExisted(vote.get().id());
     }
 }

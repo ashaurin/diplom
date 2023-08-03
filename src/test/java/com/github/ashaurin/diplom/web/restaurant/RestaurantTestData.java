@@ -19,7 +19,7 @@ public class RestaurantTestData {
     public static final Restaurant restaurant2 = new Restaurant(RESTAURANT1_ID + 1, "Суши-роллы", of(2023, Month.JUNE, 30, 7, 0));
     public static final Restaurant restaurant3 = new Restaurant(RESTAURANT1_ID + 2, "Пануччи", of(2023, Month.JUNE, 30, 8, 0));
 
-    public static final List<Restaurant> restaurants = List.of(restaurant3, restaurant2, restaurant1);
+    public static final List<Restaurant> restaurants = List.of(restaurant1, restaurant2, restaurant3);
 
     public static Restaurant getNew() {
         return new Restaurant(null,"Невкусно и грустно", of(2023, Month.JUNE, 30, 9, 0));

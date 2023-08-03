@@ -35,7 +35,7 @@ public class ProfileVoteController {
     public ResponseEntity<Vote> get(@AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("get vote for user {}", userId);
-        return ResponseEntity.of(repository.get(userId));
+        return ResponseEntity.of(repository.getByDate(userId, LocalDate.now()));
     }
 
     @DeleteMapping
@@ -43,7 +43,7 @@ public class ProfileVoteController {
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         int userId = authUser.id();
         log.info("delete vote for user {}", userId);
-        service.delete(userId);
+        service.delete(userId, LocalDate.now());
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)

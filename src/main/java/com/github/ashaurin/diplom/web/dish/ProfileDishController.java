@@ -13,6 +13,7 @@ import com.github.ashaurin.diplom.model.Dish;
 import com.github.ashaurin.diplom.repository.DishRepository;
 import com.github.ashaurin.diplom.web.AuthUser;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -27,13 +28,13 @@ public class ProfileDishController {
     @GetMapping
     public List<Dish> getAll(@AuthenticationPrincipal AuthUser authUser) {
         log.info("getAll for user {}", authUser.id());
-        return repository.getAll();
+        return repository.getAllByDate(LocalDate.now());
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Dish> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         log.info("get dish {} for user {}", id, authUser.id());
-        return ResponseEntity.of(repository.get(id));
+        return ResponseEntity.of(repository.getByDate(id, LocalDate.now()));
     }
 
 }

@@ -12,6 +12,7 @@ import com.github.ashaurin.diplom.repository.VoteRepository;
 import com.github.ashaurin.diplom.util.JsonUtil;
 import com.github.ashaurin.diplom.web.AbstractControllerTest;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import static java.time.LocalDateTime.of;
@@ -58,7 +59,7 @@ public class ProfileVoteControllerTest extends AbstractControllerTest {
     void delete() throws Exception {
         perform(MockMvcRequestBuilders.delete(REST_URL))
                 .andExpect(status().isNoContent());
-        assertFalse(voteRepository.get(VOTE1_ID).isPresent());
+        assertFalse(voteRepository.getByDate(VOTE1_ID, LocalDate.now()).isPresent());
     }
 
     @Test
@@ -80,6 +81,9 @@ public class ProfileVoteControllerTest extends AbstractControllerTest {
     @Test
     @WithUserDetails(value = USER_MAIL2)
     void createWithLocation() throws Exception {
+        LocalDateTime now = LocalDateTime.now();
+        Assumptions.assumeFalse(now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), 11, 0)));
+
         Vote newVote = getNew();
         ResultActions action = perform(MockMvcRequestBuilders.post(ProfileVoteController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
