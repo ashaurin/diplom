@@ -15,7 +15,6 @@ import java.time.LocalDate;
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@ToString(callSuper = true, exclude = {"user"})
 public class Vote extends BaseEntity {
 
     @Column(name = "date", nullable = false)
@@ -26,6 +25,7 @@ public class Vote extends BaseEntity {
     @NotNull
     private Integer restaurantId;
 
+    @ToString.Exclude
     @OnDelete(action= OnDeleteAction.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)

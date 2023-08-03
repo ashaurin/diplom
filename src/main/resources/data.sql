@@ -9,10 +9,10 @@ VALUES  ('USER', 1),
         ('USER', 2),
         ('USER', 3);
 
-INSERT INTO restaurant (DATE_TIME, NAME)
-VALUES ('2023-06-30 06:00:00', 'Дядя Ваня'),
-       ('2023-06-30 07:00:00', 'Суши-роллы'),
-       ('2023-06-30 08:00:00', 'Пануччи');
+INSERT INTO restaurant (NAME)
+VALUES ('Дядя Ваня'),
+       ('Суши-роллы'),
+       ('Пануччи');
 
 INSERT INTO dish (DATE, NAME, PRICE, RESTAURANT_ID)
 VALUES (CURRENT_DATE, 'Пельмени', 500, 1),
