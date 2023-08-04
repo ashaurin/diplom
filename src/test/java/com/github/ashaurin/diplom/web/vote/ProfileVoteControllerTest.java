@@ -68,35 +68,51 @@ public class ProfileVoteControllerTest extends AbstractControllerTest {
     @WithUserDetails(value = USER_MAIL)
     void update() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        Assumptions.assumeFalse(now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), checkHour, 0)));
 
-        Vote updated = VoteTestData.getUpdated();
-        perform(MockMvcRequestBuilders.put(ProfileVoteController.REST_URL)
+        if (now.isBefore(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), checkHour, 0))){
+
+            Vote updated = VoteTestData.getUpdated();
+
+            perform(MockMvcRequestBuilders.put(ProfileVoteController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
                 .andDo(print())
                 .andExpect(status().isNoContent());
 
-        VOTE_MATCHER.assertMatch(voteRepository.getExisted(USER_ID), updated);
+            VOTE_MATCHER.assertMatch(voteRepository.getExisted(USER_ID), updated);
+        }
+        else {
+            perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND))
+                    .andDo(print())
+                    .andExpect(status().is4xxClientError());
+        }
     }
 
     @Test
     @WithUserDetails(value = USER_MAIL2)
     void createWithLocation() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        Assumptions.assumeFalse(now.isAfter(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), checkHour, 0)));
 
-        Vote newVote = getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post(ProfileVoteController.REST_URL)
+        if (now.isBefore(of(now.getYear(), now.getMonth(), now.getDayOfMonth(), checkHour, 0))){
+            Vote newVote = getNew();
+            ResultActions action = perform(MockMvcRequestBuilders.post(ProfileVoteController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newVote)))
                 .andDo(print());
 
-        Vote created = VOTE_MATCHER.readFromJson(action);
-        int newId = created.id();
-        newVote.setId(newId);
-        VOTE_MATCHER.assertMatch(created, newVote);
-        VOTE_MATCHER.assertMatch(voteRepository.getExisted(USER_ID + 2), newVote);
+            Vote created = VOTE_MATCHER.readFromJson(action);
+            int newId = created.id();
+            newVote.setId(newId);
+
+            VOTE_MATCHER.assertMatch(created, newVote);
+            VOTE_MATCHER.assertMatch(voteRepository.getExisted(USER_ID + 2), newVote);
+
+        }
+        else {
+            perform(MockMvcRequestBuilders.get(REST_URL + NOT_FOUND))
+                    .andDo(print())
+                    .andExpect(status().is4xxClientError());
+        }
     }
 
 }
