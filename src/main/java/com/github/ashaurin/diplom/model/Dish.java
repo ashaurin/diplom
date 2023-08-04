@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import com.github.ashaurin.diplom.util.validation.NoHtml;
+import org.springframework.data.util.ProxyUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -44,5 +45,19 @@ public class Dish extends BaseEntity {
         this.price = price;
         this.name = name;
         this.restaurantId = restaurantId;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        Dish that = (Dish) o;
+
+        return id != null && id.equals(that.id) && date.equals(that.date) && price.equals(that.price) && name.equals(that.name);
     }
 }
