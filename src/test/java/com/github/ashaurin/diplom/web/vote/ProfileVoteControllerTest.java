@@ -76,7 +76,6 @@ public class ProfileVoteControllerTest extends AbstractControllerTest {
             perform(MockMvcRequestBuilders.put(ProfileVoteController.REST_URL)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(updated)))
-                .andDo(print())
                 .andExpect(status().isNoContent());
 
             VOTE_MATCHER.assertMatch(voteRepository.getExisted(USER_ID), updated);

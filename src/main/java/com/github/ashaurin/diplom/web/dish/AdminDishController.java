@@ -20,6 +20,7 @@ import java.util.List;
 
 import static com.github.ashaurin.diplom.util.validation.ValidationUtil.assureIdConsistent;
 import static com.github.ashaurin.diplom.util.validation.ValidationUtil.checkNew;
+import static com.github.ashaurin.diplom.service.DishService.convertStringToDate;
 
 
 @RestController
@@ -33,40 +34,39 @@ public class AdminDishController {
     private final DishRepository repository;
     private final DishService service;
 
-    @GetMapping
-    public List<Dish> getAll(@AuthenticationPrincipal AuthUser authUser) {
-        log.info("getAll for user {}", authUser.id());
-        return repository.getAllByDate(LocalDate.now());
+    @GetMapping("/by-date")
+    public List<Dish> getAllByDate(@AuthenticationPrincipal AuthUser authUser, @RequestParam String date) {
+        log.info("getAllByDate dishes for user {}", authUser.id());
+        return repository.getAllByDate(convertStringToDate(date));
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Dish> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
-        log.info("get dish {} for user {}", id, authUser.id());
+    public ResponseEntity<Dish> getByDate(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
+        log.info("getByDate dish {} for user {}", id, authUser.id());
         return ResponseEntity.of(repository.getByDate(id, LocalDate.now()));
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
-        log.info("delete {} for user {}", id, authUser.id());
+        log.info("delete dish {} for user {}", id, authUser.id());
         repository.deleteExisted(id);
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Dish dish, @PathVariable int id) {
-        log.info("update {} for user {}", id, authUser.id());
+        log.info("update dish {} for user {}", id, authUser.id());
         assureIdConsistent(dish, id);
-        repository.getExisted(id);
-        service.save(dish);
+        service.update(dish, id);
     }
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Dish> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Dish dish) {
+    @PostMapping(value = "/{restaurantId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Dish> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Dish dish, @PathVariable int restaurantId) {
         int userId = authUser.id();
         log.info("create {} for user {}", dish, userId);
         checkNew(dish);
-        Dish created = service.save(dish);
+        Dish created = service.create(dish, restaurantId);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL + "/{id}")
                 .buildAndExpand(created.getId()).toUri();

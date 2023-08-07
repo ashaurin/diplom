@@ -13,6 +13,8 @@ import com.github.ashaurin.diplom.web.AbstractControllerTest;
 
 import java.time.LocalDate;
 
+import static com.github.ashaurin.diplom.service.DishService.convertDateToString;
+import static com.github.ashaurin.diplom.web.restaurant.RestaurantTestData.RESTAURANT1_ID;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -24,13 +26,14 @@ import static com.github.ashaurin.diplom.web.user.UserTestData.ADMIN_MAIL;
 public class AdminDishControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL_SLASH = REST_URL + '/';
+    private static final String REST_URL_SLASH_BY_DATE = REST_URL + "/by-date?date=";
 
     @Autowired
     private DishRepository dishRepository;
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
-    void get() throws Exception {
+    void getByDate() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + DISH1_ID))
                 .andExpect(status().isOk())
                 .andDo(print())
@@ -39,14 +42,14 @@ public class AdminDishControllerTest extends AbstractControllerTest {
     }
 
     @Test
-    void getUnauth() throws Exception {
+    void getByDateUnauth() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + DISH1_ID))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
-    void getNotFound() throws Exception {
+    void getByDateNotFound() throws Exception {
         perform(MockMvcRequestBuilders.get(REST_URL_SLASH + NOTFOUND_ID))
                 .andDo(print())
                 .andExpect(status().isNotFound());
@@ -54,23 +57,12 @@ public class AdminDishControllerTest extends AbstractControllerTest {
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
-    void getAll() throws Exception {
-        perform(MockMvcRequestBuilders.get(REST_URL))
+    void getAllByDate() throws Exception {
+        perform(MockMvcRequestBuilders.get(REST_URL_SLASH_BY_DATE + convertDateToString(LocalDate.now())))
                 .andExpect(status().isOk())
                 .andDo(print())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
                 .andExpect(DISH_MATCHER.contentJson(dishes));
-    }
-    @Test
-    @WithUserDetails(value = ADMIN_MAIL)
-    void update() throws Exception {
-        Dish updated = getUpdated();
-        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + DISH1_ID)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(JsonUtil.writeValue(updated)))
-                .andExpect(status().isNoContent());
-
-        DISH_MATCHER.assertMatch(dishRepository.getExisted(DISH1_ID), updated);
     }
 
     @Test
@@ -81,12 +73,24 @@ public class AdminDishControllerTest extends AbstractControllerTest {
         assertFalse(dishRepository.getByDate(DISH1_ID, LocalDate.now()).isPresent());
     }
 
+    @Test
+    @WithUserDetails(value = ADMIN_MAIL)
+    void update() throws Exception {
+        Dish updated = getUpdated();
+
+        perform(MockMvcRequestBuilders.put(REST_URL_SLASH + DISH1_ID)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(JsonUtil.writeValue(updated)))
+                .andExpect(status().isNoContent());
+
+        DISH_MATCHER.assertMatch(dishRepository.getExisted(DISH1_ID), updated);
+    }
 
     @Test
     @WithUserDetails(value = ADMIN_MAIL)
     void createWithLocation() throws Exception {
         Dish newDish = getNew();
-        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL)
+        ResultActions action = perform(MockMvcRequestBuilders.post(REST_URL_SLASH + RESTAURANT1_ID)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(JsonUtil.writeValue(newDish)));
 

@@ -1,14 +1,14 @@
 package com.github.ashaurin.diplom.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import com.github.ashaurin.diplom.util.validation.NoHtml;
-import org.springframework.data.util.ProxyUtils;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -35,16 +35,17 @@ public class Dish extends BaseEntity {
     @NotNull
     private LocalDate date;
 
-    @Column(name = "restaurant_id", nullable = false)
-    @NotNull
-    private Integer restaurantId;
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonIgnore
+    private Restaurant restaurant;
 
-    public Dish(Integer id, Integer restaurantId, String name, LocalDate date, BigDecimal price) {
+    public Dish(Integer id, String name, LocalDate date, BigDecimal price) {
         super(id);
         this.date = date;
         this.price = price;
         this.name = name;
-        this.restaurantId = restaurantId;
     }
 
     @Override
