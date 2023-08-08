@@ -19,7 +19,7 @@ import static com.github.ashaurin.diplom.web.user.UserTestData.USER_MAIL;
 public class ProfileDishControllerTest extends AbstractControllerTest {
 
     private static final String REST_URL_SLASH = REST_URL + '/';
-    private static final String REST_URL_SLASH_BY_DATE = REST_URL + "/byDate?date=";
+    private static final String REST_URL_SLASH_BY_DATE = REST_URL + "/by-date?date=";
 
 
     @Test

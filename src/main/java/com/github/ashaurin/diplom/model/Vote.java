@@ -3,7 +3,6 @@ package com.github.ashaurin.diplom.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -11,7 +10,7 @@ import org.hibernate.annotations.OnDeleteAction;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "vote", uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "vote_unique_user_date_idx")})
+@Table(name = "vote", indexes = @Index(columnList = "restaurant_id"), uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"}, name = "vote_unique_user_date_idx")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,9 +20,11 @@ public class Vote extends BaseEntity {
     @Schema(hidden = true)
     private LocalDate date;
 
-    @Column(name = "restaurant_id", nullable = false)
-    @NotNull
-    private Integer restaurantId;
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id", nullable = false)
+    @JsonIgnore
+    private Restaurant restaurant;
 
     @ToString.Exclude
     @OnDelete(action= OnDeleteAction.CASCADE)
@@ -32,10 +33,9 @@ public class Vote extends BaseEntity {
     @JsonIgnore
     private User user;
 
-    public Vote(Integer id, Integer restaurantId) {
+    public Vote(Integer id) {
         super(id);
         this.date = LocalDate.now();
-        this.restaurantId = restaurantId;
     }
 
 

@@ -1,6 +1,6 @@
 package com.github.ashaurin.diplom.web.vote;
 
-import jakarta.validation.Valid;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -18,7 +18,7 @@ import java.net.URI;
 import java.time.LocalDate;
 
 import static com.github.ashaurin.diplom.service.VoteService.checkTime;
-import static com.github.ashaurin.diplom.util.validation.ValidationUtil.*;
+import static com.github.ashaurin.diplom.util.validation.ValidationUtil.checkNew;
 
 
 @RestController
@@ -49,24 +49,20 @@ public class ProfileVoteController {
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Vote vote) {
+    public void update(@AuthenticationPrincipal AuthUser authUser, @RequestParam int restaurantId) {
         checkTime();
         int userId = authUser.id();
         log.info("update vote for user {}", userId);
-        vote.setDate(LocalDate.now());
-        Vote currentVote = repository.getExisted(userId);
-        assureIdConsistent(vote, currentVote.id());
-        service.save(userId, vote);
+        service.update(userId, restaurantId);
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Vote vote) {
+    public ResponseEntity<Vote> createWithLocation(@AuthenticationPrincipal AuthUser authUser, @Schema(hidden = true) @RequestBody Vote vote, @RequestParam int restaurantId) {
         checkTime();
         int userId = authUser.id();
         log.info("create vote for user {}", userId);
         checkNew(vote);
-        vote.setDate(LocalDate.now());
-        Vote created = service.save(userId, vote);
+        Vote created = service.create(userId, restaurantId, vote);
         URI uriOfNewResource = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path(REST_URL)
                 .buildAndExpand(created.getId()).toUri();

@@ -1,5 +1,6 @@
 package com.github.ashaurin.diplom.model;
 
+import jakarta.persistence.UniqueConstraint;
 import lombok.*;
 import com.github.ashaurin.diplom.util.validation.NoHtml;
 
@@ -8,11 +9,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import org.springframework.data.util.ProxyUtils;
 
 
 @Entity
-@Table(name = "restaurant")
+@Table(name = "restaurant", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "meal_unique_name_datetime_idx")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

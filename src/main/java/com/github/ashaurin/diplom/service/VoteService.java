@@ -1,5 +1,6 @@
 package com.github.ashaurin.diplom.service;
 
+import com.github.ashaurin.diplom.repository.RestaurantRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,8 +10,6 @@ import com.github.ashaurin.diplom.repository.VoteRepository;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Optional;
-
 import static java.time.LocalDateTime.of;
 
 @Service
@@ -20,19 +19,29 @@ public class VoteService {
     private static final int checkHour = 11;
     private final VoteRepository voteRepository;
     private final UserRepository userRepository;
+    private final RestaurantRepository restaurantRepository;
+
+    @Transactional
+    public Vote update(int userId, int restaurantId) {
+        Vote vote = voteRepository.getByDateExisted(userId, LocalDate.now());
+        vote.setRestaurant(restaurantRepository.getExisted(restaurantId));
+        return voteRepository.save(vote);
+    }
 
 
     @Transactional
-    public Vote save(int userId, Vote vote) {
+    public Vote create(int userId, int restaurantId, Vote vote) {
+        vote.setDate(LocalDate.now());
         vote.setUser(userRepository.getExisted(userId));
+        vote.setRestaurant(restaurantRepository.getExisted(restaurantId));
         return voteRepository.save(vote);
 
     }
 
     @Transactional
     public void delete(int userId, LocalDate date) {
-        Optional<Vote> vote = voteRepository.getByDate(userId, date);
-        voteRepository.deleteExisted(vote.get().id());
+        Vote vote = voteRepository.getByDateExisted(userId, date);
+        voteRepository.deleteExisted(vote.id());
     }
 
     public static void checkTime() {

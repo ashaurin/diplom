@@ -24,7 +24,7 @@ public class ProfileDishController {
     static final String REST_URL = "/api/profile/dishes";
     private final DishRepository repository;
 
-    @GetMapping("/byDate")
+    @GetMapping("/by-date")
     public List<Dish> getAllByDate(@AuthenticationPrincipal AuthUser authUser, @RequestParam String date) {
         log.info("getAllByDate for user {}", authUser.id());
         return repository.getAllByDate(convertStringToDate(date));

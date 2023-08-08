@@ -15,7 +15,7 @@ public class RestaurantTestData {
     public static final Restaurant restaurant2 = new Restaurant(RESTAURANT1_ID + 1, "Суши-роллы");
     public static final Restaurant restaurant3 = new Restaurant(RESTAURANT1_ID + 2, "Пануччи");
 
-    public static final List<Restaurant> restaurants = List.of(restaurant1, restaurant2, restaurant3);
+    public static final List<Restaurant> restaurants = List.of(restaurant1, restaurant3, restaurant2);
 
     public static Restaurant getNew() {
         return new Restaurant(null,"Невкусно и грустно");
