@@ -30,7 +30,9 @@ public class VoteService {
 
 
     @Transactional
-    public Vote create(int userId, int restaurantId, Vote vote) {
+    public Vote create(int userId, int restaurantId) {
+        checkNew(userId, LocalDate.now());
+        Vote vote = new Vote(null);
         vote.setDate(LocalDate.now());
         vote.setUser(userRepository.getExisted(userId));
         vote.setRestaurant(restaurantRepository.getExisted(restaurantId));
@@ -50,4 +52,11 @@ public class VoteService {
             throw new IllegalArgumentException("It is too late, vote can't be changed");
         }
     }
+
+    public void checkNew(int userId, LocalDate date) {
+        if (voteRepository.getByDate(userId, date).isPresent()){
+            throw new IllegalArgumentException("You have already voted");
+        }
+    }
+
 }

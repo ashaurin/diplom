@@ -4,7 +4,7 @@ import com.github.ashaurin.diplom.model.Vote;
 import com.github.ashaurin.diplom.web.MatcherFactory;
 
 public class VoteTestData {
-    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Vote.class, "user");
+    public static final MatcherFactory.Matcher<Vote> VOTE_MATCHER = MatcherFactory.usingIgnoringFieldsComparator(Vote.class, "user", "restaurant");
 
     public static final int VOTE1_ID = 1;
 

@@ -1,18 +1,21 @@
 package com.github.ashaurin.diplom.model;
 
-import jakarta.persistence.UniqueConstraint;
+import jakarta.persistence.*;
 import lombok.*;
 import com.github.ashaurin.diplom.util.validation.NoHtml;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Entity
-@Table(name = "restaurant", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "meal_unique_name_datetime_idx")})
+@Table(name = "restaurant", uniqueConstraints = {@UniqueConstraint(columnNames = {"name"}, name = "restaraunt_unique_name_datetime_idx")})
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,6 +32,10 @@ public class Restaurant extends BaseEntity {
         super(id);
         this.name = name;
     }
+
+    @OnDelete(action= OnDeleteAction.CASCADE)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<Dish> dishes = new ArrayList<>();
 
     @Override
     public boolean equals(Object o) {

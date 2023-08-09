@@ -11,7 +11,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public interface VoteRepository extends BaseRepository<Vote>{
 
-    @Query("SELECT v FROM Vote v WHERE v.user.id = :userId AND v.date = :date")
+    @Query("SELECT v FROM Vote v LEFT JOIN FETCH v.restaurant WHERE v.user.id = :userId AND v.date = :date")
     Optional<Vote> getByDate(int userId, LocalDate date);
 
     default Vote getByDateExisted(int userId, LocalDate date) {

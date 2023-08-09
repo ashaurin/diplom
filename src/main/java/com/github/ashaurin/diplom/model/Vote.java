@@ -21,9 +21,8 @@ public class Vote extends BaseEntity {
     private LocalDate date;
 
     @OnDelete(action= OnDeleteAction.CASCADE)
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "restaurant_id", nullable = false)
-    @JsonIgnore
     private Restaurant restaurant;
 
     @ToString.Exclude
