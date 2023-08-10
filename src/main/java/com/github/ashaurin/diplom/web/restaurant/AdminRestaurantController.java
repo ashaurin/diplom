@@ -2,6 +2,9 @@ package com.github.ashaurin.diplom.web.restaurant;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -38,12 +41,14 @@ public class AdminRestaurantController {
 
 
     @GetMapping("/{id}")
+    @Cacheable(cacheNames="restaurant", key="#id")
     public ResponseEntity<Restaurant> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         log.info("get restaurant {} for user {}", id, authUser.id());
         return ResponseEntity.of(repository.get(id));
     }
 
     @DeleteMapping("/{id}")
+    @CacheEvict(cacheNames="restaurant", key="#id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         log.info("delete {} for user {}", id, authUser.id());
@@ -51,6 +56,7 @@ public class AdminRestaurantController {
     }
 
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(cacheNames="users", key="#id")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@AuthenticationPrincipal AuthUser authUser, @Valid @RequestBody Restaurant restaurant, @PathVariable int id) {
         log.info("update {} for user {}", id, authUser.id());

@@ -2,6 +2,7 @@ package com.github.ashaurin.diplom.web.restaurant;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -31,6 +32,7 @@ public class ProfileRestaurantController {
     }
 
     @GetMapping("/{id}")
+    @Cacheable(cacheNames="restaurant", key="#id")
     public ResponseEntity<Restaurant> get(@AuthenticationPrincipal AuthUser authUser, @PathVariable int id) {
         log.info("get restaurant {} for user {}", id, authUser.id());
         return ResponseEntity.of(repository.get(id));

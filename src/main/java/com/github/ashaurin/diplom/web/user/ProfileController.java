@@ -2,6 +2,9 @@ package com.github.ashaurin.diplom.web.user;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -22,17 +25,18 @@ import static com.github.ashaurin.diplom.util.validation.ValidationUtil.checkNew
 @RestController
 @RequestMapping(value = ProfileController.REST_URL, produces = MediaType.APPLICATION_JSON_VALUE)
 @Slf4j
-// TODO: cache only most requested data!
 public class ProfileController extends AbstractUserController {
     static final String REST_URL = "/api/profile";
 
     @GetMapping
+    @Cacheable(cacheNames="users", key="#authUser.id()")
     public User get(@AuthenticationPrincipal AuthUser authUser) {
         log.info("get {}", authUser);
         return authUser.getUser();
     }
 
     @DeleteMapping
+    @CacheEvict(cacheNames="users", key="#authUser.id()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@AuthenticationPrincipal AuthUser authUser) {
         super.delete(authUser.id());
@@ -50,6 +54,7 @@ public class ProfileController extends AbstractUserController {
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @CacheEvict(cacheNames="users", key="#authUser.id()")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @Transactional
     public void update(@RequestBody @Valid UserTo userTo, @AuthenticationPrincipal AuthUser authUser) {
